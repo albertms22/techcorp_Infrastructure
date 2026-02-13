@@ -1,7 +1,5 @@
 # TechCorp AWS Infrastructure
 
-This repository contains Terraform configuration to deploy a highly available web application infrastructure on AWS.
-
 ## Architecture Overview
 
 The infrastructure includes:
