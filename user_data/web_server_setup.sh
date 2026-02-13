@@ -90,16 +90,37 @@ if command -v firewall-cmd &> /dev/null; then
     firewall-cmd --reload
 fi
 
-# Create a user for password authentication
+# Create a user for SSH access with key-based authentication
 useradd -m -s /bin/bash techcorp
-echo "techcorp:TechCorp2024!Secure" | chpasswd
 
-# Enable password authentication for SSH
-sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+# Set up SSH directory and authorized_keys
+mkdir -p /home/techcorp/.ssh
+chmod 700 /home/techcorp/.ssh
+
+# Note: SSH public key should be provided via:
+# - User data environment variable TECHCORP_PUBLIC_KEY
+# - AWS Systems Manager Parameter Store
+# - AWS Secrets Manager
+# For now, the key must be provisioned by the infrastructure/deployment system
+if [ -n "$TECHCORP_PUBLIC_KEY" ]; then
+    echo "$TECHCORP_PUBLIC_KEY" >> /home/techcorp/.ssh/authorized_keys
+    chmod 600 /home/techcorp/.ssh/authorized_keys
+    chown -R techcorp:techcorp /home/techcorp/.ssh
+fi
+
+# Ensure PasswordAuthentication is disabled for security (do NOT enable password auth)
+sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/#PasswordAuthentication no/PasswordAuthentication no/' /etc/ssh/sshd_config
 systemctl restart sshd
 
-# Add techcorp user to sudoers
-echo "techcorp ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/techcorp
+# Add techcorp user to sudoers with limited privileges
+# Allow only specific administrative commands for web server management
+cat > /etc/sudoers.d/techcorp <<'SUDOERS'
+# techcorp user - Limited sudo access for web server administration
+techcorp ALL=(ALL) /usr/sbin/apachectl, /bin/systemctl restart httpd, /bin/systemctl stop httpd, /bin/systemctl start httpd, /bin/systemctl status httpd
+SUDOERS
+
+chmod 0440 /etc/sudoers.d/techcorp
 
 # Create a health check endpoint
 cat > /var/www/html/health.html <<EOF

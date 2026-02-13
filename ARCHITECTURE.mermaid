@@ -7,6 +7,7 @@ graph TB
     subgraph AWS["AWS Cloud - Region: us-east-1"]
         subgraph VPC["VPC: 10.0.0.0/16<br/>techcorp-vpc"]
             IGW[Internet Gateway]
+            ALB[Application<br/>Load Balancer<br/>Regional Multi-AZ]
             
             subgraph AZ1["Availability Zone 1"]
                 subgraph PubSub1["Public Subnet 1<br/>10.0.1.0/24"]
@@ -22,7 +23,6 @@ graph TB
             
             subgraph AZ2["Availability Zone 2"]
                 subgraph PubSub2["Public Subnet 2<br/>10.0.2.0/24"]
-                    ALB[Application<br/>Load Balancer]
                     NAT2[NAT Gateway 2]
                 end
                 
@@ -48,6 +48,7 @@ graph TB
     %% Bastion to internal servers
     Bastion -.->|SSH:22| Web1
     Bastion -.->|SSH:22| Web2
+
     Bastion -.->|SSH:22| DB
     
     %% Web to Database

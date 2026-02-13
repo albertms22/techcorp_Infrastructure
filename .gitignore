@@ -30,9 +30,15 @@ terraform.rc
 *.swp
 *.swo
 
-# Ignore SSH keys
-*.pem
-*.pub
+# Ignore SSH keys - Policy: Specific SSH key filenames to prevent accidental 
+# commit of private keys. Only specific key types are ignored, not all .pem/.pub files
+# which could hide legitimate certificate files.
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+id_ecdsa
+id_ecdsa.pub
 
 # Keep tfvars.example
 !terraform.tfvars.example
@@ -40,4 +46,4 @@ terraform.rc
 # Ignore plan output
 plan_output.txt
 *.plan
-.terraform.lock.hcl
+
