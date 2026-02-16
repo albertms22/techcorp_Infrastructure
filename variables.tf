@@ -36,5 +36,4 @@ variable "server_password" {
   description = "Password for techcorp user on servers (for SSH password authentication)"
   type        = string
   sensitive   = true
-  default     = "techcorp2026!"
 }
