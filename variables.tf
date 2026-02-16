@@ -17,19 +17,16 @@ variable "key_pair_name" {
 variable "bastion_instance_type" {
   description = "Instance type for bastion host"
   type        = string
-  default     = "t3.micro"
 }
 
 variable "web_instance_type" {
   description = "Instance type for web servers"
   type        = string
-  default     = "t3.micro"
 }
 
 variable "db_instance_type" {
   description = "Instance type for database server"
   type        = string
-  default     = "t3.small"
 }
 
 variable "server_password" {
